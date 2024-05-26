@@ -27,7 +27,9 @@ Thank you and good luck!
 
 Jake
 
-Create a Python script to draw a chart of performance index per year of a specific company and in the same chart plot the same index of the sector. We have two CSV files, the first CSV is "COMP.CSV" and has the columns: "Sector name", "Scenario name" and year columns. The second one "" has the column "Company Name", "Sector" and year.
+1. 
+
+Create a Python script to draw a chart of performance index per year of a specific company and in the same chart plot the same index of the sector. We have two CSV files, the first CSV is "COMP.CSV" and has the columns: "Sector name", "Scenario name", "2019", "2020" and "2021" columns. The second one "SECTOR.CSV" has the columns "Company Name", "Sector" and "2019", "2020" and "2021".
 Company will be specified by name in a variable.
 Imange should be stored in "D:\tmp\out.png"
 Use Pandas, Plotly.
