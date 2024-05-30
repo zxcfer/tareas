@@ -4,12 +4,25 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 from datetime import datetime
 
-def update_chart(company_df, sector_df):
-    # company_name = 'ACC'
-    company_name = st.session_state.company_name
+# Streamlit app
+st.title('Company Climate Transition Pathway')
 
+specific_date = '' # "Airlines_01/02/2022"
+company_df = pd.read_csv("D:\data\Company_Latest_Assessments.csv")
+sector_df = pd.read_csv("D:\data\Sector_Benchmarks_24052024.csv")
+
+company_name = st.selectbox("Company",
+                            company_df["Company Name"].unique(),
+                            # on_change=update_chart,
+                            args=(company_df, sector_df),
+                            key='company_name')
+
+if company_name:
+    # TODO: extract available dates - release date
+    # TODO: extract region
+    # TODO: find outlyers
     specific_date = '' # "Airlines_01/02/2022"
-    
+
     # Filter specific company
     company_data = company_df[company_df["Company Name"] == company_name]
     print(company_data)
@@ -17,7 +30,7 @@ def update_chart(company_df, sector_df):
     # check if empty company_data
     if company_data.empty:
         st.write("No data for this company")
-        return
+        st.stop()
 
     sector = company_data.iloc[0]["Sector"]
     company = company_data.iloc[0]["Company Name"]
@@ -67,8 +80,9 @@ def update_chart(company_df, sector_df):
 
     # plot the df, index as x axis, columns as y axis
     fig = px.area(df, x=df.index, y=column_names, 
-                  color_discrete_sequence=["#FDB714", "#009CA7", "#F05023"])
+                    color_discrete_sequence=["#FDB714", "#009CA7", "#F05023"])
     fig2 = px.line(df, x=df.index, y=company_name)
+    fig2.update_traces(line=dict(color="#00A8FF", width=5))
 
     subfig = make_subplots(specs=[[{"secondary_y": True}]])
     subfig.add_traces(fig.data + fig2.data)
@@ -76,25 +90,5 @@ def update_chart(company_df, sector_df):
     # update chart after company selector is updated
     subfig.update_layout(title_text=company_name)
 
-    print('updating chart')
-    chart_slot.plotly_chart(subfig)
-
-company_name = 'ACC'
-specific_date = '' # "Airlines_01/02/2022"
-company_df = pd.read_csv("D:\data\_COMPANY.CSV")
-sector_df = pd.read_csv("D:\data\_SECTOR.CSV")
-
-# Streamlit app
-st.title('Company Climate Transition Pathway')
-
-# Create company selector for streamlit
-company_name = st.selectbox("Company",
-                            company_df["Company Name"].unique(),
-                            on_change=update_chart,
-                            args=(company_df, sector_df),
-                            key='company_name')
-
-print('first print chart')
-st.session_state.first_time = True
-if chart_slot.empty:
-    chart_slot = st.empty()
+    print('print chart')
+    chart_slot = st.plotly_chart(subfig)
